@@ -26,7 +26,7 @@ void run()
     swapcontext(&parent, &(RunQ->conext));  // start the first thread
 }
 
-void yeild()
+void yield()
 {
 	TCB_t *curr, *next;
 	curr = RunQ;
