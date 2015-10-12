@@ -10,34 +10,28 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "tcb.h"
 #define ALLOCATE(t) (t*) calloc(1, sizeof(t))
 
 int data = 0;
 
-typedef struct itemObj {
-    struct itemObj *next;
-    struct itemObj *prev;
-    ucontext_t context;
-    int id;
-} itemObj;
-
 typedef struct Queue
 {
-    struct itemObj * head;
+    struct TCB_t * head;
 } Queue;
 
-itemObj * NewItem();
+TCB_t * NewItem();
 Queue * InitQueue();
-void AddQueue(struct Queue * queue, struct itemObj * item);
-itemObj * DelQueue(struct Queue * queue);
+void AddQueue(struct Queue * queue, struct TCB_t * item);
+TCB_t * DelQueue(struct Queue * queue);
 void RotateQ(struct Queue * queue);
 
-struct itemObj * NewItem()
+struct TCB_t * NewItem()
 {
-    itemObj * element = ALLOCATE(struct itemObj);
+    TCB_t * element = ALLOCATE(struct TCB_t);
     element->prev = NULL;
     element->next = NULL;
-    element->id = ++data;
+    element->data = ++data;
     return element;
 }
 
@@ -46,7 +40,7 @@ struct Queue * InitQueue()
     return ALLOCATE(struct Queue);
 }
 
-void AddQueue(struct Queue * queue, struct itemObj * element)
+void AddQueue(struct Queue * queue, struct TCB_t * element)
 {
     if(queue->head == NULL)
     {
@@ -56,7 +50,7 @@ void AddQueue(struct Queue * queue, struct itemObj * element)
     }
     else
     {
-        itemObj * tail = queue->head->prev;
+        TCB_t * tail = queue->head->prev;
         tail->next = element;
         element->prev = tail;
         tail = tail->next;
@@ -66,7 +60,7 @@ void AddQueue(struct Queue * queue, struct itemObj * element)
     }
 }
 
-struct itemObj * DelQueue(struct Queue * queue)
+struct TCB_t * DelQueue(struct Queue * queue)
 {
     if(queue->head == NULL) // if the queue is empty
     {
@@ -74,14 +68,14 @@ struct itemObj * DelQueue(struct Queue * queue)
     }
     else if (queue->head->next == queue->head) //if there is one element
     {
-        itemObj * temp = queue->head;
+        TCB_t * temp = queue->head;
         queue->head = NULL;
         return temp;
     }
     else //more than one element
     {
-        itemObj * temp = queue->head;
-        itemObj * tail = queue->head->prev;
+        TCB_t * temp = queue->head;
+        TCB_t * tail = queue->head->prev;
         
         if(queue->head->next == queue->head)
         {
@@ -99,6 +93,38 @@ struct itemObj * DelQueue(struct Queue * queue)
 void RotateQ(struct Queue * queue)
 {
     queue->head = queue->head->next;
+}
+
+void PrintQueue(struct Queue * queue)
+{
+    TCB_t * temp = queue->head;
+    
+    // No elements
+    if(queue->head == NULL)
+    {
+        printf("\nEmpty Queue");
+        return;
+    }
+    
+    // Only 1 element
+    else if(temp->next == queue->head)
+    {
+        printf("\nElement %d", queue->head->data);
+        return;
+    }
+    
+    // Multiple elements
+    else
+    {
+        // If this wasn't here it wouldn't pass initial check.
+        printf("\nElement %d", temp->data);
+        temp = temp->next;
+        while(temp != queue->head)
+        {
+            printf("\nElement %d", temp->data);
+            temp = temp->next;
+        }
+    }
 }
 
 #endif /* q_h */
