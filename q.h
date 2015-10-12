@@ -95,36 +95,4 @@ void RotateQ(struct Queue * queue)
     queue->head = queue->head->next;
 }
 
-void PrintQueue(struct Queue * queue)
-{
-    TCB_t * temp = queue->head;
-    
-    // No elements
-    if(queue->head == NULL)
-    {
-        printf("\nEmpty Queue");
-        return;
-    }
-    
-    // Only 1 element
-    else if(temp->next == queue->head)
-    {
-        printf("\nElement %d", queue->head->data);
-        return;
-    }
-    
-    // Multiple elements
-    else
-    {
-        // If this wasn't here it wouldn't pass initial check.
-        printf("\nElement %d", temp->data);
-        temp = temp->next;
-        while(temp != queue->head)
-        {
-            printf("\nElement %d", temp->data);
-            temp = temp->next;
-        }
-    }
-}
-
 #endif /* q_h */
