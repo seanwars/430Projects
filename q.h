@@ -15,19 +15,19 @@
 
 int data = 0;
 
-typedef struct Queue
-{
+typedef struct Queue{
     struct TCB_t * head;
 } Queue;
+
 
 TCB_t * NewItem();
 Queue * InitQueue();
 void AddQueue(struct Queue * queue, struct TCB_t * item);
 TCB_t * DelQueue(struct Queue * queue);
 void RotateQ(struct Queue * queue);
+Queue * runQ;
 
-struct TCB_t * NewItem()
-{
+struct TCB_t * NewItem(){
     TCB_t * element = ALLOCATE(struct TCB_t);
     element->prev = NULL;
     element->next = NULL;
@@ -35,21 +35,16 @@ struct TCB_t * NewItem()
     return element;
 }
 
-struct Queue * InitQueue()
-{
+struct Queue * InitQueue(){
     return ALLOCATE(struct Queue);
 }
 
-void AddQueue(struct Queue * queue, struct TCB_t * element)
-{
-    if(queue->head == NULL)
-    {
+void AddQueue(struct Queue * queue, struct TCB_t * element){
+    if(queue->head == NULL){
         queue->head = element;
         queue->head->prev = queue->head;
         queue->head->next = queue->head;
-    }
-    else
-    {
+    }else{
         TCB_t * tail = queue->head->prev;
         tail->next = element;
         element->prev = tail;
@@ -60,29 +55,21 @@ void AddQueue(struct Queue * queue, struct TCB_t * element)
     }
 }
 
-struct TCB_t * DelQueue(struct Queue * queue)
-{
-    if(queue->head == NULL) // if the queue is empty
-    {
+struct TCB_t * DelQueue(struct Queue * queue){
+    if(queue->head == NULL) // if the queue is empty{
         return NULL;
-    }
-    else if (queue->head->next == queue->head) //if there is one element
-    {
+    }else if (queue->head->next == queue->head){ //if there is one element
         TCB_t * temp = queue->head;
         queue->head = NULL;
         return temp;
-    }
-    else //more than one element
-    {
+    }else{ //more than one element
+    
         TCB_t * temp = queue->head;
         TCB_t * tail = queue->head->prev;
         
-        if(queue->head->next == queue->head)
-        {
+        if(queue->head->next == queue->head){
             queue->head = NULL;
-        }
-        else
-        {
+        }else{
             queue->head = queue->head->next;
             queue->head->prev = tail;
             tail->next = queue->head;
@@ -90,8 +77,7 @@ struct TCB_t * DelQueue(struct Queue * queue)
         return temp;
     }
 }
-void RotateQ(struct Queue * queue)
-{
+void RotateQ(struct Queue * queue){
     queue->head = queue->head->next;
 }
 
