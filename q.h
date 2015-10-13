@@ -8,9 +8,10 @@
 //
 #ifndef q_h
 #define q_h
-
+#define _XOPEN_SOURCE 600
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "tcb.h"
 #define ALLOCATE(t) (t*) calloc(1, sizeof(t))
 
@@ -32,11 +33,11 @@ void RotateQ(struct Queue * queue);
 
 struct TCB_t * NewItem()
 {
-    TCB_t * element = ALLOCATE(struct TCB_t);
-    element->prev = NULL;
-    element->next = NULL;
-    element->data = ++data;
-    return element;
+    TCB_t * node = ALLOCATE(struct TCB_t);
+    node->prev = NULL;
+    node->next = NULL;
+    node->data = ++data;
+    return node;
 }
 
 struct Queue * InitQueue()
@@ -44,19 +45,19 @@ struct Queue * InitQueue()
     return ALLOCATE(struct Queue);
 }
 
-void AddQueue(struct Queue * queue, struct TCB_t * element)
+void AddQueue(struct Queue * queue, struct TCB_t * node)
 {
     if(queue->head == NULL)
     {
-        queue->head = element;
+        queue->head = node;
         queue->head->prev = queue->head;
         queue->head->next = queue->head;
     }
     else
     {
         TCB_t * tail = queue->head->prev;
-        tail->next = element;
-        element->prev = tail;
+        tail->next = node;
+        node->prev = tail;
         tail = tail->next;
         
         tail->next = queue->head;
@@ -71,13 +72,13 @@ struct TCB_t * DelQueue(struct Queue * queue)
     {
         return NULL;
     }
-    else if (queue->head->next == queue->head) //if there is one element
+    else if (queue->head->next == queue->head) //if there is one node
     {
         TCB_t * temp = queue->head;
         queue->head = NULL;
         return temp;
     }
-    else //more than one element
+    else //more than one node
     {
         TCB_t * temp = queue->head;
         TCB_t * tail = queue->head->prev;

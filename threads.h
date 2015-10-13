@@ -7,9 +7,11 @@
 //  Copyright © 2015 Shane T. Nelson. All rights reserved.
 //
 
+#define _XOPEN_SOURCE 600
 #ifndef threads_h
 #define threads_h
-#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
 #include "q.h"
 
 void start_thread(void (*f)(void))
@@ -20,14 +22,14 @@ void start_thread(void (*f)(void))
 	//TCB_t * t = (TCB_t*)malloc(sizeof(TCB_t));	//allocate a TCB_t
 	//char * s = (char*)malloc(8192);	//allocate a stack
 	init_TCB(t, f, s, 8192);
-	addQueue(runQ, t);
+	AddQueue(runQ, t);
 }
 
 void run()
 {
 	ucontext_t parent;     // get a place to store the main context, for faking
     getcontext(&parent);   // magic sauce
-    swapcontext(&parent, &(RunQ->conext));  // start the first thread
+    swapcontext(&parent, &(runQ->head->context));  // start the first thread
 }
 
 void yield()
@@ -36,7 +38,7 @@ void yield()
 	//TCB_t *curr, *next;
 	//curr = runQ;
 	RotateQ(runQ);
-	ucontext_t curr = runQ->head->conext;
+	ucontext_t curr = runQ->head->context;
 	//next = runQ;
 	swapcontext(&previous, &curr);
 }

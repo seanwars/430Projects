@@ -7,7 +7,12 @@
 //  Copyright © 2015 Shane T. Nelson. All rights reserved.
 //
 
+#define _XOPEN_SOURCE 600
 #include "threads.h"
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
+#include <unistd.h>
 
 int global = 0; //global variable for testing
 //function for thread testing
@@ -35,7 +40,7 @@ void f2()
 
 void main()
 {
-	RunQ = InitQueue();
+	runQ = InitQueue();
 	start_thread(f1);
 	start_thread(f2);
 	run();
