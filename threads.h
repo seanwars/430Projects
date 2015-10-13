@@ -15,8 +15,8 @@ void start_thread(void (*f)(void))
 {
 	TCB_t * t = (TCB_t*)malloc(sizeof(TCB_t));	//allocate a TCB_t
 	char * s = (char *)_malloca( 8192 );	//allocate a stack
-	init_TCB(&t, &f, &s, 8192);
-	addQueue(&RunQ, &t);
+	init_TCB(t, f, s, 8192);
+	addQueue(RunQ, t);
 }
 
 void run()
@@ -34,3 +34,5 @@ void yield()
 	next = RunQ;
 	swapcontext(&(curr->context), &(next->context));
 }
+
+#endif /* threads_h */
