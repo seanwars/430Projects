@@ -3,6 +3,7 @@
 //  q
 //
 //  Created by Sean C Bennett on 10/12/15.
+//  Created by Shane T. Nelson on 10/12/15.
 //  Copyright © 2015 Sean C Bennett. All rights reserved.
 //
 
@@ -13,6 +14,7 @@
 typedef struct TCB_t {
     struct TCB_t     *next;
     struct TCB_t     *prev;
+	struct TCB_t * head;
     ucontext_t      context;
     int data;
 } TCB_t;
