@@ -3,6 +3,7 @@
 //  q
 //
 //  Created by Shane T. Nelson on 10/12/15.
+//	Created by Sean C Bennett on 10/12/15
 //  Copyright © 2015 Shane T. Nelson. All rights reserved.
 //
 
@@ -13,10 +14,11 @@
 
 void start_thread(void (*f)(void))
 {
-	TCB_t * t = (TCB_t*)malloc(sizeof(TCB_t));	//allocate a TCB_t
-	char * s = (char *)_malloca( 8192 );	//allocate a stack
+	TCB_t * t = ALLOCATE(TCB_t);//allocate a TCB_t
+	void * s = malloc(8192); //allocate a stack
+	//char * sp = (char *)_malloca( 8192 );	
 	init_TCB(t, f, s, 8192);
-	addQueue(RunQ, t);
+	addQueue(runQ, t);
 }
 
 void run()
@@ -28,11 +30,13 @@ void run()
 
 void yield()
 {
-	TCB_t *curr, *next;
-	curr = RunQ;
-	RotateQ(RunQ);
-	next = RunQ;
-	swapcontext(&(curr->context), &(next->context));
+	ucontext_t previous = runQ->head->context;
+	//TCB_t *curr, *next;
+	//curr = runQ;
+	RotateQ(runQ);
+	ucontext_t curr = runQ->head->conext;
+	//next = runQ;
+	swapcontext(&previous, &curr);
 }
 
 #endif /* threads_h */

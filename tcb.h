@@ -14,12 +14,9 @@
 typedef struct TCB_t {
     struct TCB_t     *next;
     struct TCB_t     *prev;
-	struct TCB_t * head;
     ucontext_t      context;
     int data;
 } TCB_t;
-
-
 
 void init_TCB (TCB_t *tcb, void *function, void *stackP, int stack_size)
 {

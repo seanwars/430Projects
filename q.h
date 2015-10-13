@@ -21,13 +21,13 @@ typedef struct Queue
     struct TCB_t * head;
 } Queue;
 
-TCB_t * RunQ; //global header pointer to TCB
+Queue * runQ; //global header pointer to TCB
 
 TCB_t * NewItem();
-TCB_t * InitQueue();
-void AddQueue(struct TCB_t * queue, struct TCB_t * item);
-TCB_t * DelQueue(struct TCB_t * queue);
-void RotateQ(struct TCB_t * queue);
+Queue * InitQueue();
+void AddQueue(struct Queue * queue, struct TCB_t * item);
+TCB_t * DelQueue(struct Queue * queue);
+void RotateQ(struct Queue * queue);
 
 struct TCB_t * NewItem()
 {
@@ -38,12 +38,12 @@ struct TCB_t * NewItem()
     return element;
 }
 
-struct TCB_t * InitQueue()
+struct Queue * InitQueue()
 {
-    return ALLOCATE(struct TCB_t);
+    return ALLOCATE(struct Queue);
 }
 
-void AddQueue(struct TCB_t * queue, struct TCB_t * element)
+void AddQueue(struct Queue * queue, struct TCB_t * element)
 {
     if(queue->head == NULL)
     {
@@ -63,7 +63,7 @@ void AddQueue(struct TCB_t * queue, struct TCB_t * element)
     }
 }
 
-struct TCB_t * DelQueue(struct TCB_t * queue)
+struct TCB_t * DelQueue(struct Queue * queue)
 {
     if(queue->head == NULL) // if the queue is empty
     {
@@ -93,7 +93,7 @@ struct TCB_t * DelQueue(struct TCB_t * queue)
         return temp;
     }
 }
-void RotateQ(struct TCB_t * queue)
+void RotateQ(struct Queue * queue)
 {
     queue->head = queue->head->next;
 }
