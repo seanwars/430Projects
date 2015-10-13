@@ -8,7 +8,7 @@
 
 #include "threads.h"
 
-TCB_t * RunQ; //global header pointer to TCB
+Queue * RunQ; //global header pointer to TCB
 
 int global = 0; //global variable for testing
 //function for thread testing
@@ -36,6 +36,7 @@ void f2()
 
 void main()
 {
+	RunQ = InitQueue();
 	start_thread(f1);
 	start_thread(f2);
 	run();
