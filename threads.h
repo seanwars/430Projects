@@ -16,7 +16,9 @@ void start_thread(void (*f)(void))
 {
 	TCB_t * t = ALLOCATE(TCB_t);//allocate a TCB_t
 	void * s = malloc(8192); //allocate a stack
-	//char * sp = (char *)_malloca( 8192 );	
+	//char * sp = (char *)_malloca( 8192 );
+	//TCB_t * t = (TCB_t*)malloc(sizeof(TCB_t));	//allocate a TCB_t
+	//char * s = (char*)malloc(8192);	//allocate a stack
 	init_TCB(t, f, s, 8192);
 	addQueue(runQ, t);
 }

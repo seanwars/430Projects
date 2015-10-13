@@ -22,6 +22,7 @@ typedef struct Queue
 } Queue;
 
 Queue * runQ; //global header pointer to TCB
+//Queue * RunQ; //global header pointer to TCB
 
 TCB_t * NewItem();
 Queue * InitQueue();
@@ -64,6 +65,7 @@ void AddQueue(struct Queue * queue, struct TCB_t * element)
 }
 
 struct TCB_t * DelQueue(struct Queue * queue)
+//struct Queue * DelQueue(struct Queue * queue)
 {
     if(queue->head == NULL) // if the queue is empty
     {
