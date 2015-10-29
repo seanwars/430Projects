@@ -1,104 +1,110 @@
-//
-//  q.h
-//  q
-//
-//  Created by Sean C Bennett on 10/12/15.
-//  Created by Shane T. Nelson on 10/12/15.
-//  Copyright © 2015 Sean C Bennett. All rights reserved.
-//
+//****************************************************************************************************
+// Name of Author(s): Austin Carr and Taylor Cameron
+// Course Number and Name: CSE 430, Operating Systems
+// Semester: Fall 2015
+// Project: Project2
+//***************************************************************************************************/
 #ifndef q_h
 #define q_h
-#define _XOPEN_SOURCE 600
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
+
 #include "tcb.h"
-#define ALLOCATE(t) (t*) calloc(1, sizeof(t))
 
-int data = 0;
+// Returns a pointer to a new q-element
+TCB_t* NewItem(){
 
-typedef struct Queue
-{
-    struct TCB_t * head;
-} Queue;
+	TCB_t* item = malloc(sizeof(struct TCB_t));
+	item->next = NULL;
+	item->prev = NULL;
+	return item;
 
-Queue * runQ; //global header pointer to TCB
-//Queue * RunQ; //global header pointer to TCB
-
-TCB_t * NewItem();
-Queue * InitQueue();
-void AddQueue(struct Queue * queue, struct TCB_t * item);
-TCB_t * DelQueue(struct Queue * queue);
-void RotateQ(struct Queue * queue);
-
-struct TCB_t * NewItem()
-{
-    TCB_t * node = ALLOCATE(struct TCB_t);
-    node->prev = NULL;
-    node->next = NULL;
-    node->data = ++data;
-    return node;
+}
+// Creates a empty queue, pointed to by the variable head.
+void InitQueue(TCB_t** head){
+	
+	*head = NULL;
 }
 
-struct Queue * InitQueue()
-{
-    return ALLOCATE(struct Queue);
-}
+// Adds a queue item, pointed to by “item”, to the queue pointed to by head.
+void AddQueue(TCB_t** head, TCB_t* item){
 
-void AddQueue(struct Queue * queue, struct TCB_t * node)
-{
-    if(queue->head == NULL)
-    {
-        queue->head = node;
-        queue->head->prev = queue->head;
-        queue->head->next = queue->head;
-    }
-    else
-    {
-        TCB_t * tail = queue->head->prev;
-        tail->next = node;
-        node->prev = tail;
-        tail = tail->next;
+	// If head is NULL, set head to point to item
+	if(*head == NULL)
+	{
+	        *head = item;
+		item->next = item;
+		item->prev = item;
+	}
+    
+	// If queue has 1 item, add item after that node
+	else if(((*head)->next) == (*head))
+	{
+		(*head)->next = item;
+        	item->next = *head;
+        	item->prev = *head;
+        	(*head)->prev = item;
+	}
+
+	// If que has more than 1 item, iterate to end of list and add then item
+	else
+	{
         
-        tail->next = queue->head;
-        queue->head->prev = tail;
-    }
-}
-
-struct TCB_t * DelQueue(struct Queue * queue)
-//struct Queue * DelQueue(struct Queue * queue)
-{
-    if(queue->head == NULL) // if the queue is empty
-    {
-        return NULL;
-    }
-    else if (queue->head->next == queue->head) //if there is one node
-    {
-        TCB_t * temp = queue->head;
-        queue->head = NULL;
-        return temp;
-    }
-    else //more than one node
-    {
-        TCB_t * temp = queue->head;
-        TCB_t * tail = queue->head->prev;
+		TCB_t* temp = *head;
         
-        if(queue->head->next == queue->head)
-        {
-            queue->head = NULL;
-        }
-        else
-        {
-            queue->head = queue->head->next;
-            queue->head->prev = tail;
-            tail->next = queue->head;
-        }
-        return temp;
-    }
+		while(temp->next != *head)
+		{
+			temp = temp->next;
+		}
+		
+ 	// Set next item as i, set i->prev to original last item, and
+   	// item->next to head pointer
+        	temp->next = item;
+		item->prev = temp;
+		item->next = *head;
+        	(*head)->prev = item;
+	}
 }
-void RotateQ(struct Queue * queue)
-{
-    queue->head = queue->head->next;
+// Deletes an item from head and returns a pointer to the deleted item
+TCB_t* DelQueue(TCB_t** head){
+
+	// If queue is empty, return null pointer to head
+	if(*head == NULL)
+	{
+		return *head;
+	}
+    
+	// If queue has 1 item, delete that node and return it
+	else if((*head)->next == (*head))
+	{
+		TCB_t* temp = *head;
+        	*head = NULL;
+		return temp;
+	}
+    
+	// If que has more than 1 item, remove head and make head point to next
+	else
+	{
+        // Save head and head's prev pointer
+        	TCB_t* temp = *head;
+        	TCB_t* headPrev = (*head)->prev;
+        
+        // Let head point to next node and let head->prev point to previous last element
+        	*head = temp->next;
+        	(*head)->prev = headPrev;
+        
+        // Update previous item to point to new head
+        	headPrev->next = *head;
+        	return temp;
+	}
+
 }
 
-#endif /* q_h */
+// Moves the header pointer to the next element in the queue. This is equivalent to AddQ(&head, DeleteQ(&head)),
+// but is simpler to use and more efficient to implement.
+void RotateQ(TCB_t** head){
+
+	*head = (*head)->next;
+
+} 
+
+#endif

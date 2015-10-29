@@ -1,24 +1,28 @@
-//
-//  tcb.h
-//  q
-//
-//  Created by Sean C Bennett on 10/12/15.
-//  Created by Shane T. Nelson on 10/12/15.
-//  Copyright © 2015 Sean C Bennett. All rights reserved.
-//
+
+//****************************************************************************************************
+// Name of Author(s): Austin Carr and Taylor Cameron
+// Course Number and Name: CSE 430, Operating Systems
+// Semester: Fall 2015
+// Project: Project2
+//***************************************************************************************************/
+
+// Header files //////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef tcb_h
 #define tcb_h
-#define _XOPEN_SOURCE 600
-#include <ucontext.h>
-#include <string.h>
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+// Header file needed for ucontext calls.
+#include <ucontext.h>
 
 typedef struct TCB_t {
-    struct TCB_t     *next;
-    struct TCB_t     *prev;
-    ucontext_t      context;
-    int data;
+     struct TCB_t     *next;
+     struct TCB_t     *prev;
+     ucontext_t      context;
 } TCB_t;
 
 void init_TCB (TCB_t *tcb, void *function, void *stackP, int stack_size)
@@ -30,4 +34,4 @@ void init_TCB (TCB_t *tcb, void *function, void *stackP, int stack_size)
     makecontext(&tcb->context, function, 0);// context is now cooked
 }
 
-#endif /* tcb_h */
+#endif
