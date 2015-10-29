@@ -1,10 +1,3 @@
-//****************************************************************************************************
-// Name of Author(s): Austin Carr and Taylor Cameron
-// Course Number and Name: CSE 430, Operating Systems
-// Semester: Fall 2015
-// Project: Project2
-//***************************************************************************************************/
-
 #ifndef threads_h
 #define threads_h
 
