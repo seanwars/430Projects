@@ -32,6 +32,7 @@ int InitSem(sem_t* sem, int value)
 		sem->count = value;
 	return 0;
 }
+
 //wait function
 void P(sem_t* sem)
 {
@@ -49,8 +50,7 @@ void V(sem_t* sem)
 	sem->count++;
 	if(sem->count <= 0)
 	{
-		TCB_t* temp = DelQueue(sem->Q);
-		AddQueue(&RunQ, temp);
+		AddQueue(&RunQ, DelQueue(sem->Q));
 	}
 	yield();
 }

@@ -1,15 +1,11 @@
 #ifndef tcb_h
 #define tcb_h
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-
-// Header file needed for ucontext calls.
 #include <ucontext.h>
 
-typedef struct TCB_t {
+typedef struct TCB_t 
+{
      struct TCB_t     *next;
      struct TCB_t     *prev;
      ucontext_t      context;

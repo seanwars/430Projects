@@ -1,7 +1,6 @@
 #ifndef threads_h
 #define threads_h
 
-
 #include "q.h"
 
 struct TCB_t *RunQ;
@@ -15,20 +14,18 @@ void start_thread(void (*function)(void))
 }
 
 void run()
-{                           // real code
+{                           
     ucontext_t parent;     // get a place to store the main context, for faking
     getcontext(&parent);   // magic sauce
     swapcontext(&parent, &(RunQ->context));  // start the first thread
 }
 
+//swaps context if the current context to the next context
 void yield()
 {
     TCB_t *prev = RunQ;
-
     RotateQ(&RunQ);
-
-    swapcontext(&(prev->context), &(RunQ->context));
-      
+    swapcontext(&(prev->context), &(RunQ->context));  
 }
 
 #endif
