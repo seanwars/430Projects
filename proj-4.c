@@ -10,53 +10,79 @@
 #include <stdlib.h>
 #include "sem.h"
 
-sem_t accessMutex;
-sem_t readerMutex;
-sem_t orderMutex;
+sem_t mutex;
+sem_t rsem;
+sem_t wsem;
 
-unsigned int readers = 0;
+unsigned int rwc = 0;
+unsigned int wwc = 0;
+unsigned int rc = 0;
+unsigned int wc = 0;
 
-// Reader 
+// Reader CASE 3
 void reader(void){
-	printf("Entering reader");
+	sleep(1);
+	printf("Entering reader\n");
 	while(1)
 	{
-		P(&orderMutex);
+		//Reader Entry
+		P(&mutex);
 		
-		P(&readerMutex);
-		if(readers == 0)
+		if((wwc > 0) || (wc > 0))
 		{
-			P(&accessMutex);
+			rwc++;
+			v(&mutex);
+			P(&rsem);
+			V(&mutex);
+			rwc--;
 		}
-		readers++;
-		V(&orderMutex);
-		V(&readerMutex);
-		
-		//readResource();
-		printf("Reader %d access", readers);
-		
-		P(&readerMutex);
-		readers--;
-		if(readers == 0)
+		rc++;
+		V(&mutex);
+		//READ
+		//Reader Exit
+		P(&mutex);
+		rc--;
+		if((rc == 0) && (wwc > 0))
 		{
-			V(&accessMutex);
+			V(&wsem);
 		}
-		V(&readerMutex);
+		V(&mutex);
     }
     return;
 }
-// Writer
+// Writer CASE 3
 void writer(void) {
-	printf("Entering writer");
+	sleep(1);
+	printf("Entering writer\n");
     while(1){
-		P(&orderMutex);
-		P(&accessMutex);
-		V(&orderMutex);
-		
-		//writeResource();
-		printf("Writer access");
-		
-		V(&accessMutex);
+		//Writer Entry
+		P(&mutex);
+		if((rc > 0) || (wc > 0) || (rwc > 0) || (wwc > 0))
+		{
+			wwc++;
+			V(&mutex);
+			P(&wsem);
+			P(&mutex);
+			wwc--;
+		}
+		wc++;
+		V(&mutex);
+		//WRITE
+		//Writer Exit
+		P(&mutex);
+		wc--;
+		if(rwc > 0)
+		{
+			for(int i = 0; i <= rwc; i++)
+			{
+				V(rsem);
+			}
+		}
+		else if(wwc > 0)
+		{
+			V(wsem);
+		}
+		V(&mutex);
     }
     
     return;
@@ -66,17 +92,17 @@ int main() {
 	int ret1, ret2, ret3;
     TCB_t *RunQ = 0;
     InitQueue(&RunQ);
-	ret1 = InitSem(&accessMutex, 1);
+	ret1 = InitSem(&mutex, 1);
 	if(ret1 < 0)
 	{
 		printf("Error initializing access semaphore");
 	}
-	ret2 = InitSem(&readerMutex, 1);
+	ret2 = InitSem(&rsem, 1);
 	if(ret2 < 0)
 	{
 		printf("Error initializing reader semaphore");
 	}
-	ret3 = InitSem(&orderMutex, 1);
+	ret3 = InitSem(&wsem, 1);
 	if(ret3 < 0)
 	{
 		printf("Error initializing order semaphore");
