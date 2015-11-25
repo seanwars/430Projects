@@ -31,7 +31,7 @@ void reader(void){
 		if((wwc > 0) || (wc > 0))
 		{
 			rwc++;
-			v(&mutex);
+			V(&mutex);
 			P(&rsem);
 			V(&mutex);
 			rwc--;
@@ -52,6 +52,7 @@ void reader(void){
 }
 // Writer CASE 3
 void writer(void) {
+	int i;
 	sleep(1);
 	printf("Entering writer\n");
     while(1){
@@ -73,14 +74,14 @@ void writer(void) {
 		wc--;
 		if(rwc > 0)
 		{
-			for(int i = 0; i <= rwc; i++)
+			for(i = 0; i <= rwc; i++)
 			{
-				V(rsem);
+				V(&rsem);
 			}
 		}
 		else if(wwc > 0)
 		{
-			V(wsem);
+			V(&wsem);
 		}
 		V(&mutex);
     }
