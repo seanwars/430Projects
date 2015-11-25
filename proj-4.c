@@ -27,7 +27,7 @@ void reader(void){
 	{
 		//Reader Entry
 		P(&mutex);
-		
+		printf("Reader Entry\n");
 		if((wwc > 0) || (wc > 0))
 		{
 			rwc++;
@@ -39,8 +39,11 @@ void reader(void){
 		rc++;
 		V(&mutex);
 		//READ
+		printf("Reading resource: Reader # %d \n", rc);
+		sleep(1);
 		//Reader Exit
 		P(&mutex);
+		printf("Reader Exit\n");
 		rc--;
 		if((rc == 0) && (wwc > 0))
 		{
@@ -58,6 +61,7 @@ void writer(void) {
     while(1){
 		//Writer Entry
 		P(&mutex);
+		printf("Writer Entry\n");
 		if((rc > 0) || (wc > 0) || (rwc > 0) || (wwc > 0))
 		{
 			wwc++;
@@ -69,8 +73,11 @@ void writer(void) {
 		wc++;
 		V(&mutex);
 		//WRITE
+		printf("Writing to resource: Writer # %d \n", wc);
+		sleep(1);
 		//Writer Exit
 		P(&mutex);
+		printf("Writer Exit\n");
 		wc--;
 		if(rwc > 0)
 		{
@@ -110,7 +117,10 @@ int main() {
 	}
 
     start_thread(reader);
+	start_thread(reader);
+	start_thread(reader);
     start_thread(writer);
+	start_thread(writer);
     run();
     
     return 0;
